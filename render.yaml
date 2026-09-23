@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hexaelectric-pothole-detection
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ROBOFLOW_API_KEY
+        value: OJZ1C7rMkPdlIraKpMUB
+      - key: ROBOFLOW_MODEL_ID
+        value: pothole-detection-yolo-v8/1

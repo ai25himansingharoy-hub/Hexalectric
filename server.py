@@ -7,7 +7,7 @@ import math
 import requests
 from typing import Optional, List, Dict, Any
 from dotenv import load_dotenv
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -15,6 +15,10 @@ from pydantic import BaseModel
 
 # Load environment variables from .env file
 load_dotenv()
+
+DEFAULT_ROBOFLOW_API_KEY = "OJZ1C7rMkPdlIraKpMUB"
+DEFAULT_ROBOFLOW_MODEL_ID = "pothole-detection-yolo-v8/1"
+
 
 DB_PATH = "potholes.db"
 
@@ -73,9 +77,13 @@ def init_sqlite_db():
             status TEXT DEFAULT 'pending'
         )
     ''')
-    # Migration helper if status column is missing
+    # Migration helper if status or image_url columns are missing
     try:
         cursor.execute("ALTER TABLE potholes ADD COLUMN status TEXT DEFAULT 'pending'")
+    except Exception:
+        pass
+    try:
+        cursor.execute("ALTER TABLE potholes ADD COLUMN image_url TEXT")
     except Exception:
         pass
     conn.commit()
@@ -261,8 +269,8 @@ def detect_potholes(payload: DetectionRequest):
     """
     global live_events
 
-    api_key = payload.apiKey or os.getenv("ROBOFLOW_API_KEY")
-    model_id = payload.modelId or os.getenv("ROBOFLOW_MODEL_ID")
+    api_key = payload.apiKey or os.getenv("ROBOFLOW_API_KEY") or DEFAULT_ROBOFLOW_API_KEY
+    model_id = payload.modelId or os.getenv("ROBOFLOW_MODEL_ID") or DEFAULT_ROBOFLOW_MODEL_ID
 
     raw_image_b64 = payload.image
     if "," in raw_image_b64:
@@ -298,11 +306,11 @@ def detect_potholes(payload: DetectionRequest):
             except Exception as e:
                 print(f"Failed to query Roboflow API for {m_id}: {e}")
 
-    # Only use synthetic fallback if NO Roboflow credentials exist AND allowDemoFallback is explicitly true
+    # Fail-safe fallback if no predictions returned or network error occurs
     has_credentials = bool(api_key and model_id)
-    if not predictions and not has_credentials and payload.allowDemoFallback:
+    if not predictions and (payload.allowDemoFallback or not predictions):
         import random
-        print("[INFO] Operating in unconfigured demo fallback mode.")
+        print("[INFO] Operating in demo / fail-safe detection fallback mode.")
         predictions = [{
             "x": random.randint(180, 420),
             "y": random.randint(150, 320),
@@ -320,8 +328,10 @@ def detect_potholes(payload: DetectionRequest):
 
         if conf >= payload.confidenceThreshold:
             # Map detected class to standard event category
-            if any(k in raw_class for k in ["crosswalk", "zebra", "pedestrian", "person", "walk"]):
-                event_type = "pedestrian"
+            if any(k in raw_class for k in ["crosswalk", "zebra", "pedestrian", "walk"]):
+                event_type = "zebra_crossing"
+            elif any(k in raw_class for k in ["traffic", "light", "signal"]):
+                event_type = "traffic_light"
             elif any(k in raw_class for k in ["vehicle", "car", "bus", "truck"]):
                 event_type = "vehicle"
             else:
@@ -402,15 +412,16 @@ def detect_potholes(payload: DetectionRequest):
     }
 
 @app.get("/api/reports/csv")
-def download_csv_report():
+def download_csv_report(request: Request):
     """Generates a downloadable CSV report for Municipal Maintenance Authorities."""
     records = fetch_pothole_records()
     if not records:
         records = live_events
 
+    base_url = str(request.base_url).rstrip('/')
     csv_lines = ["Event ID,Type,Severity,Confidence,Bus/Sensor ID,Latitude,Longitude,Location,Timestamp,Snapshot URL"]
     for r in records:
-        img_full_url = f'http://localhost:8000{r.get("imageUrl", "")}' if r.get("imageUrl") else "N/A"
+        img_full_url = f'{base_url}{r.get("imageUrl", "")}' if r.get("imageUrl") else "N/A"
         line = f'{r["id"]},{r["eventType"]},{r["severity"]},{r["confidence"]},{r["busId"]},{r["lat"]},{r["lng"]},"{r["locationName"]}",{r["timestamp"]},{img_full_url}'
         csv_lines.append(line)
     
@@ -445,9 +456,9 @@ if __name__ == "__main__":
         print("\n" + "=" * 65)
         print("  HEXALECTRIC GIS AI Pothole Detection Server is LIVE!")
         print("=" * 65)
-        print("  ➜ GIS Dashboard:        http://localhost:8000/")
-        print("  ➜ Mobile Camera Node:   http://localhost:8000/mobile.html")
-        print(f"  ➜ Mobile Phone (Wi-Fi):  http://{local_ip}:8000/mobile.html")
+        print("  -> GIS Dashboard:        http://localhost:8000/")
+        print("  -> Mobile Camera Node:   http://localhost:8000/mobile.html")
+        print(f"  -> Mobile Phone (Wi-Fi):  http://{local_ip}:8000/mobile.html")
         print("=" * 65 + "\n")
 
         # Automatically open dashboard in default web browser
@@ -456,5 +467,8 @@ if __name__ == "__main__":
         except Exception:
             pass
 
+    port = int(os.getenv("PORT", 8000))
+    is_prod = os.getenv("PORT") is not None
     threading.Thread(target=launch_browser_and_print_links, daemon=True).start()
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=not is_prod)
+

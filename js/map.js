@@ -20,7 +20,7 @@ function initMap() {
   L.control.zoom({ position: 'topleft' }).addTo(map);
 
   const initialTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const tileUrl = initialTheme === 'light' 
+  const tileUrl = initialTheme === 'light'
     ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
     : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 
@@ -157,7 +157,7 @@ function switchMapView(mode) {
   } else if (mode === 'route') {
     if (map.hasLayer(heatmapGroup)) map.removeLayer(heatmapGroup);
     if (!map.hasLayer(markerGroup)) map.addLayer(markerGroup);
-    
+
     // Fit map bounds to Bus Route R-17
     if (routePolyline) {
       map.fitBounds(routePolyline.getBounds(), { padding: [40, 40] });
@@ -172,13 +172,13 @@ function switchMapView(mode) {
 function openStreetView(lat, lng) {
   const modal = document.getElementById('streetViewModal');
   const container = document.getElementById('mly');
-  
+
   if (!modal || !container) return;
   modal.classList.add('active');
 
   // Embed interactive Google Street View panorama iframe (No API Key Required!)
   const googleStreetViewUrl = `https://maps.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&output=embed`;
-  
+
   container.innerHTML = `
     <iframe 
       width="100%" 
@@ -211,8 +211,8 @@ function focusEventOnMap(lat, lng) {
 function updateMapTileTheme(theme) {
   if (!map || !mapTileLayer) return;
   map.removeLayer(mapTileLayer);
-  
-  const tileUrl = theme === 'light' 
+
+  const tileUrl = theme === 'light'
     ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
     : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 

@@ -90,14 +90,14 @@ function renderYoloSnapshot(canvas, eventType, confidence, severity) {
   const ctx = canvas.getContext('2d');
   const w = canvas.width = canvas.parentElement ? canvas.parentElement.clientWidth : 240;
   const h = canvas.height = canvas.parentElement ? canvas.parentElement.clientHeight : 110;
-  
+
   // Background asphalt gradient
   const grad = ctx.createLinearGradient(0, 0, w, h);
   grad.addColorStop(0, '#1e293b');
   grad.addColorStop(1, '#0f172a');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
-  
+
   // Simulated road perspective markings
   ctx.strokeStyle = '#475569';
   ctx.setLineDash([8, 8]);
@@ -107,28 +107,28 @@ function renderYoloSnapshot(canvas, eventType, confidence, severity) {
   ctx.lineTo(w * 0.5, h);
   ctx.stroke();
   ctx.setLineDash([]);
-  
+
   // Color based on hazard type
   let boxColor = '#38bdf8'; // blue
   if (eventType === 'pothole') boxColor = '#f43f5e'; // red
   if (eventType === 'vehicle') boxColor = '#fbbf24'; // yellow
-  
+
   // Draw simulated object / pothole shape
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
   ctx.beginPath();
   ctx.ellipse(w * 0.5, h * 0.6, w * 0.25, h * 0.2, 0, 0, Math.PI * 2);
   ctx.fill();
-  
+
   // YOLO Bounding Box
   const bx = w * 0.2;
   const by = h * 0.3;
   const bw = w * 0.6;
   const bh = h * 0.55;
-  
+
   ctx.strokeStyle = boxColor;
   ctx.lineWidth = 2;
   ctx.strokeRect(bx, by, bw, bh);
-  
+
   // YOLO Box Label
   ctx.fillStyle = boxColor;
   ctx.fillRect(bx, by - 18, 110, 18);

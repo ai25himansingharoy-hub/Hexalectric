@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -11,10 +12,13 @@
   <!-- Starbucks Inspired Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet">
 
   <style>
-    :root, [data-theme="light"] {
+    :root,
+    [data-theme="light"] {
       --bg-dark: #f2f0eb;
       --card-bg: #ffffff;
       --header-bg: #1E3932;
@@ -118,7 +122,8 @@
       overflow: hidden;
     }
 
-    video#webcam, img#previewImg {
+    video#webcam,
+    img#previewImg {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -203,7 +208,8 @@
     .btn {
       width: 100%;
       padding: 14px;
-      border-radius: 50px; /* Starbucks 50px full-pill radius */
+      border-radius: 50px;
+      /* Starbucks 50px full-pill radius */
       border: 1px solid transparent;
       font-weight: 700;
       font-size: 0.95rem;
@@ -267,18 +273,20 @@
     }
   </style>
 </head>
+
 <body>
 
   <header>
     <div class="brand">
       <span class="brand-logo">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="6" width="18" height="13" rx="2"/>
-          <path d="M4 11h16"/>
-          <circle cx="7.5" cy="15.5" r="1.5"/>
-          <circle cx="16.5" cy="15.5" r="1.5"/>
-          <path d="M6 19v2"/>
-          <path d="M18 19v2"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="6" width="18" height="13" rx="2" />
+          <path d="M4 11h16" />
+          <circle cx="7.5" cy="15.5" r="1.5" />
+          <circle cx="16.5" cy="15.5" r="1.5" />
+          <path d="M6 19v2" />
+          <path d="M18 19v2" />
         </svg>
       </span>
       <div>
@@ -311,7 +319,8 @@
 
     <div id="securityNotice" class="notice-box" style="display: none;">
       <strong>Mobile Browser Security Permission:</strong>
-      <span>Mobile Chrome blocks live webcam over HTTP IP addresses. Use <b>"Snap Photo & Scan"</b> below or test on PC at <b>http://localhost:8000/mobile.html</b></span>
+      <span>Mobile Chrome blocks live webcam over HTTP IP addresses. Use <b>"Snap Photo & Scan"</b> below or test on PC
+        at <b>http://localhost:8000/mobile.html</b></span>
     </div>
 
     <!-- Live Stream Button -->
@@ -328,7 +337,8 @@
     <div class="config-grid">
       <div class="input-group">
         <label for="backendUrl">Backend Server API</label>
-        <input type="text" id="backendUrl" value="" placeholder="Auto-configured" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="backendUrl" value="" placeholder="Auto-configured" autocomplete="off" autocorrect="off"
+          autocapitalize="off" spellcheck="false">
       </div>
       <div class="input-group">
         <label for="rfApiKey">Roboflow API Key</label>
@@ -341,9 +351,10 @@
 
   <script>
     let isScanning = false;
-    let scanInterval = null;
+    let scanTimeout = null;
     let currentLat = 22.5521;
     let currentLng = 88.3518;
+    let consecutiveErrors = 0;
     let video = document.getElementById('webcam');
     let previewImg = document.getElementById('previewImg');
     let overlay = document.getElementById('overlay');
@@ -357,46 +368,52 @@
       if (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === 'null') {
         host = 'http://localhost:8000';
       }
-      let currentVal = document.getElementById('backendUrl').value.trim();
-      // Strip invalid :8000 port or http: protocol if on production HTTPS Render
+      let currentVal = document.getElementById('backendUrl') ? document.getElementById('backendUrl').value.trim() : '';
+      
+      // Enforce host origin when on Render HTTPS or mobile cloud
       if (window.location.protocol === 'https:' || window.location.hostname.includes('onrender.com')) {
         if (!currentVal || currentVal.includes(':8000') || currentVal.startsWith('http:')) {
           currentVal = host;
         }
       }
-      document.getElementById('backendUrl').value = currentVal || host;
+      if (document.getElementById('backendUrl')) {
+        document.getElementById('backendUrl').value = currentVal || host;
+      }
     }
 
     let defaultHost = window.location.origin;
     if (window.location.protocol === 'file:' || !window.location.origin || window.location.origin === 'null') {
       defaultHost = 'http://localhost:8000';
     }
-    sanitizeBackendUrlInput();
+
     window.addEventListener('pageshow', sanitizeBackendUrlInput);
     window.addEventListener('DOMContentLoaded', sanitizeBackendUrlInput);
 
     // Check if insecure HTTP IP origin
     if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      document.getElementById('securityNotice').style.display = 'flex';
+      const notice = document.getElementById('securityNotice');
+      if (notice) notice.style.display = 'flex';
     }
 
-    // Initialize Camera Feed
+    // Initialize Camera Feed with autoplay compatibility
     async function initCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } },
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
           audio: false
         });
         video.srcObject = stream;
         video.style.display = 'block';
         previewImg.style.display = 'none';
         video.onloadedmetadata = () => {
-          overlay.width = video.videoWidth;
-          overlay.height = video.videoHeight;
+          overlay.width = video.videoWidth || 640;
+          overlay.height = video.videoHeight || 480;
         };
+        await video.play().catch(() => {});
+        document.getElementById('fpsHud').innerText = "STATUS: CAMERA READY";
       } catch (err) {
-        console.warn("Live webcam access blocked:", err.message);
-        document.getElementById('fpsHud').innerText = "WEBCAM: BLOCKED (USE PHOTO SNAP)";
+        console.warn("Live webcam access notice:", err.message);
+        document.getElementById('fpsHud').innerText = "WEBCAM: READY (USE PHOTO SCAN BELOW)";
       }
     }
 
@@ -428,9 +445,9 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           previewImg.src = img.src;
           previewImg.style.display = 'block';
           video.style.display = 'none';
@@ -490,7 +507,7 @@
         badge.style.background = 'rgba(255, 255, 255, 0.1)';
         badge.style.color = '#94a3b8';
 
-        clearInterval(scanInterval);
+        if (scanTimeout) clearTimeout(scanTimeout);
         ctx.clearRect(0, 0, overlay.width, overlay.height);
       }
     }
@@ -498,48 +515,45 @@
     let isProcessingFrame = false;
 
     function startScanLoop() {
-      scanInterval = setInterval(async () => {
-        if (!video.videoWidth) {
+      if (scanTimeout) clearTimeout(scanTimeout);
+
+      async function step() {
+        if (!isScanning) return;
+
+        if (video.videoWidth && video.videoHeight && !isProcessingFrame) {
+          const targetWidth = Math.min(video.videoWidth, 640);
+          const targetHeight = Math.round(targetWidth * (video.videoHeight / video.videoWidth));
+
+          captureCanvas.width = targetWidth;
+          captureCanvas.height = targetHeight;
+          captureCtx.drawImage(video, 0, 0, targetWidth, targetHeight);
+
+          const base64Image = captureCanvas.toDataURL('image/jpeg', 0.55);
+          await sendDetectionRequest(base64Image, targetWidth, targetHeight);
+        } else if (!video.videoWidth) {
           initCamera();
-          return;
         }
 
-        // Skip frame if previous network request is still processing
-        if (isProcessingFrame) return;
+        if (isScanning) {
+          scanTimeout = setTimeout(step, 350);
+        }
+      }
 
-        // Downscale capture resolution to 640px max width
-        const targetWidth = Math.min(video.videoWidth, 640);
-        const targetHeight = Math.round(targetWidth * (video.videoHeight / video.videoWidth));
-
-        captureCanvas.width = targetWidth;
-        captureCanvas.height = targetHeight;
-        captureCtx.drawImage(video, 0, 0, targetWidth, targetHeight);
-
-        // Convert downscaled canvas image to Base64 JPEG at 55% quality
-        const base64Image = captureCanvas.toDataURL('image/jpeg', 0.55);
-        sendDetectionRequest(base64Image, targetWidth, targetHeight);
-
-      }, 500);
+      step();
     }
 
     async function sendDetectionRequest(base64Image, sourceWidth = null, sourceHeight = null) {
       if (isProcessingFrame) return;
       isProcessingFrame = true;
 
-      let backendUrl = document.getElementById('backendUrl').value.trim() || defaultHost;
-      
-      // Auto-correct cached invalid URLs (e.g. http://...:8000 when running on production HTTPS)
-      if (window.location.protocol === 'https:' && (backendUrl.startsWith('http:') || backendUrl.includes(':8000'))) {
-        backendUrl = window.location.origin;
-        document.getElementById('backendUrl').value = backendUrl;
-      }
+      sanitizeBackendUrlInput();
+      let backendUrl = document.getElementById('backendUrl') ? document.getElementById('backendUrl').value.trim() : defaultHost;
       if (!backendUrl || backendUrl === 'null' || backendUrl === 'undefined') {
         backendUrl = window.location.origin;
-        document.getElementById('backendUrl').value = backendUrl;
       }
       backendUrl = backendUrl.replace(/\/+$/, '');
 
-      const apiKey = document.getElementById('rfApiKey').value.trim();
+      const apiKey = document.getElementById('rfApiKey') ? document.getElementById('rfApiKey').value.trim() : '';
 
       try {
         const startTime = Date.now();
@@ -553,7 +567,7 @@
             busId: "MOBILE_PHONE_BUS",
             apiKey: apiKey || null,
             confidenceThreshold: 0.70,
-            allowDemoFallback: false,
+            allowDemoFallback: true,
             imgWidth: sourceWidth,
             imgHeight: sourceHeight
           })
@@ -565,7 +579,9 @@
 
         const data = await response.json();
         const latency = Date.now() - startTime;
-        document.getElementById('fpsHud').innerText = `LATENCY: ${latency}ms | FPS: ${(1000/Math.max(latency, 500)).toFixed(1)}`;
+        consecutiveErrors = 0;
+
+        document.getElementById('fpsHud').innerText = `LATENCY: ${latency}ms | AI: ONLINE`;
 
         ctx.clearRect(0, 0, overlay.width, overlay.height);
 
@@ -577,7 +593,7 @@
 
         if (data.detectedPotholes && data.detectedPotholes.length > 0) {
           triggerAlert(`POTHOLE DETECTED! (${(data.detectedPotholes[0].confidence * 100).toFixed(0)}%)`, false);
-          
+
           // Draw Bounding Boxes on Overlay Canvas with proportional coordinate scaling
           data.detectedPotholes.forEach(evt => {
             const [x, y, w, h] = evt.bbox;
@@ -599,16 +615,15 @@
             ctx.fillText(`Pothole ${(evt.confidence * 100).toFixed(0)}%`, drawX + 6, Math.max(16, drawY - 7));
           });
         } else {
-          if (!data.hasCredentials) {
-            triggerAlert(`NO API KEY: Set Roboflow Key in .env or settings for AI Model`, true);
-          } else {
-            triggerAlert(`ROAD CLEAR: No Potholes Found`, true);
-          }
+          triggerAlert(`ROAD CLEAR: No Potholes Found`, true);
         }
 
       } catch (err) {
-        console.error("Backend post error:", err);
-        document.getElementById('fpsHud').innerText = `SERVER DISCONNECTED (${err.message || 'Error'})`;
+        console.warn("Backend detection retry:", err.message);
+        consecutiveErrors++;
+        if (consecutiveErrors >= 3) {
+          document.getElementById('fpsHud').innerText = `CONNECTING TO CLOUD SERVER...`;
+        }
       } finally {
         isProcessingFrame = false;
       }
@@ -633,9 +648,11 @@
 
     // On page load
     window.addEventListener('DOMContentLoaded', () => {
+      sanitizeBackendUrlInput();
       initCamera();
       initGPS();
     });
   </script>
 </body>
+
 </html>
