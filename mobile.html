@@ -7,7 +7,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>HEXALECTRIC | Mobile Bus Camera Sensor</title>
+  <title>HEXALECTRIC | Onboard Bus Camera Intelligence Node</title>
 
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -291,7 +291,7 @@
       </span>
       <div>
         <div class="brand-title">HEXALECTRIC</div>
-        <div style="font-size: 0.68rem; color: var(--text-muted);">Mobile Bus Camera Node</div>
+        <div style="font-size: 0.68rem; color: var(--text-muted);">Onboard Bus Camera Sensor Node</div>
       </div>
     </div>
     <div id="statusBadge" class="status-badge">
@@ -318,25 +318,24 @@
   <div class="controls-panel">
 
     <div id="securityNotice" class="notice-box" style="display: none;">
-      <strong>Mobile Browser Security Permission:</strong>
-      <span>Mobile Chrome blocks live webcam over HTTP IP addresses. Use <b>"Snap Photo & Scan"</b> below or test on PC
-        at <b>http://localhost:8000/mobile.html</b></span>
+      <strong>Camera Permission Notice:</strong>
+      <span>Browsers require HTTPS for live stream access. Use <b>"Capture & Scan Camera Frame"</b> below to capture and analyze road photos directly on any device.</span>
     </div>
 
     <!-- Live Stream Button -->
     <button id="btnToggleScanner" class="btn btn-primary" onclick="toggleScanner()">
-      Start Live Stream Scanner
+      Start Live Camera Feed
     </button>
 
-    <!-- Native Camera Photo Capture Button (Works on ALL phones) -->
+    <!-- Camera Photo Capture Button -->
     <button id="btnSnapPhoto" class="btn btn-outline" onclick="triggerNativeCamera()">
-      Snap Road Photo & Scan Pothole
+      Capture & Scan Camera Frame
     </button>
     <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleNativePhoto(event)">
 
     <div class="config-grid">
       <div class="input-group">
-        <label for="backendUrl">Backend Server API</label>
+        <label for="backendUrl">AI Backend API Endpoint</label>
         <input type="text" id="backendUrl" value="" placeholder="Auto-configured" autocomplete="off" autocorrect="off"
           autocapitalize="off" spellcheck="false">
       </div>
@@ -564,7 +563,7 @@
             image: base64Image,
             lat: currentLat,
             lng: currentLng,
-            busId: "MOBILE_PHONE_BUS",
+            busId: "BUS_CAM_NODE_01",
             apiKey: apiKey || null,
             confidenceThreshold: 0.70,
             allowDemoFallback: true,

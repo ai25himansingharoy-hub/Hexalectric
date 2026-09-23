@@ -99,7 +99,7 @@ function updateStats() {
   document.getElementById('statTotal').innerText = total;
   document.getElementById('statPotholes').innerText = potholes;
   document.getElementById('statVehicles').innerText = vehicles;
-  document.getElementById('statBuses').innerText = liveBackendConnected ? "Mobile Cam + 3" : "3 Active";
+  document.getElementById('statBuses').innerText = liveBackendConnected ? "Live Cam + 3" : "3 Active";
 }
 
 // Render Event Feed Log in Sidebar
