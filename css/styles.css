@@ -765,3 +765,133 @@ body {
 .leaflet-popup-tip {
   background: var(--card-bg) !important;
 }
+
+/* ==========================================================================
+   Responsive Mobile & Tablet Adaptations (SIH 2026 Mobile Perfection)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+  body, #app {
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh;
+  }
+
+  .app-header {
+    height: auto;
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .brand-container {
+    justify-content: space-between;
+  }
+
+  .header-actions {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    gap: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .header-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .header-actions .btn,
+  .header-actions .status-pill {
+    white-space: nowrap;
+    padding: 6px 14px;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+
+  .main-body {
+    flex-direction: column-reverse;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sidebar {
+    width: 100% !important;
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+    max-height: none;
+  }
+
+  .map-container {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .dashcam-hud {
+    right: 16px;
+    bottom: 84px;
+    width: calc(100% - 32px);
+    max-width: 360px;
+  }
+
+  .frap-floating-btn {
+    bottom: 16px;
+    right: 16px;
+    width: 50px;
+    height: 50px;
+    font-size: 1.3rem;
+  }
+
+  .modal-card {
+    width: 94vw;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .report-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .brand-info h1 {
+    font-size: 1.1rem;
+  }
+
+  .brand-info .tagline {
+    font-size: 0.68rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+  }
+
+  .kpi-card {
+    padding: 10px;
+  }
+
+  .kpi-card .value {
+    font-size: 1.1rem;
+  }
+
+  .dashcam-hud {
+    display: none; /* Hide floating overlay on small phone screens to keep map clean */
+  }
+
+  .map-hud {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .hud-btn {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+}
+
