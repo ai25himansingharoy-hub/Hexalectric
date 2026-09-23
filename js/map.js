@@ -21,12 +21,13 @@ function initMap() {
 
   const initialTheme = document.documentElement.getAttribute('data-theme') || 'dark';
   const tileUrl = initialTheme === 'light'
-    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-    : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
   mapTileLayer = L.tileLayer(tileUrl, {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-    maxZoom: 16
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(map);
 
   markerGroup = L.layerGroup().addTo(map);
@@ -54,6 +55,12 @@ function initMap() {
 
   // Load Initial Event Markers
   renderEventsOnMap(simulatedEvents);
+
+  // Invalidate map size on window resize/mobile orientation to prevent blank gray tiles
+  window.addEventListener('resize', () => { if (map) map.invalidateSize(); });
+  window.addEventListener('orientationchange', () => { setTimeout(() => { if (map) map.invalidateSize(); }, 300); });
+  setTimeout(() => { if (map) map.invalidateSize(); }, 300);
+  setTimeout(() => { if (map) map.invalidateSize(); }, 1000);
 }
 
 // Render Events as Custom Map Pins & Heatmap Clusters
@@ -213,12 +220,13 @@ function updateMapTileTheme(theme) {
   map.removeLayer(mapTileLayer);
 
   const tileUrl = theme === 'light'
-    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-    : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+    ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
   mapTileLayer = L.tileLayer(tileUrl, {
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-    maxZoom: 16
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
   }).addTo(map);
 }
 
