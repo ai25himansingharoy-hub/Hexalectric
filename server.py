@@ -57,6 +57,19 @@ def is_duplicate_pothole(new_lat: float, new_lng: float, new_bbox: List[float], 
 SNAPSHOT_DIR = "snapshots"
 os.makedirs(SNAPSHOT_DIR, exist_ok=True)
 
+def delete_snapshot_file(image_url: Optional[str]):
+    """Deletes the physical snapshot .jpg file from disk when an event is deleted/cleared."""
+    if not image_url:
+        return
+    try:
+        filename = os.path.basename(image_url)
+        filepath = os.path.join(SNAPSHOT_DIR, filename)
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            print(f"[INFO] Deleted physical snapshot file: {filename}")
+    except Exception as e:
+        print(f"[WARNING] Failed to remove snapshot file {image_url}: {e}")
+
 def init_sqlite_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -193,7 +206,7 @@ def get_events():
 
 @app.delete("/api/events")
 def clear_events():
-    """Clears live detection history."""
+    """Clears live detection history and deletes all physical snapshot files."""
     global live_events
     live_events = []
     try:
@@ -204,7 +217,17 @@ def clear_events():
         conn.close()
     except Exception as e:
         print("Clear all DB error:", e)
-    return {"status": "success", "message": "All events cleared"}
+
+    # Delete all image files from snapshot folder
+    try:
+        for fname in os.listdir(SNAPSHOT_DIR):
+            fpath = os.path.join(SNAPSHOT_DIR, fname)
+            if os.path.isfile(fpath):
+                os.remove(fpath)
+    except Exception as err:
+        print("Clear snapshot directory error:", err)
+
+    return {"status": "success", "message": "All events and snapshot images cleared"}
 
 @app.post("/api/events/{event_id}/resolve")
 def resolve_event(event_id: str):
@@ -231,8 +254,24 @@ def resolve_event(event_id: str):
 
 @app.delete("/api/events/{event_id}")
 def delete_event(event_id: str):
-    """Deletes a specific pothole event."""
+    """Deletes a specific pothole event and removes its snapshot image from disk."""
     global live_events
+
+    target_evt = next((evt for evt in live_events if evt["id"] == event_id), None)
+    if target_evt and target_evt.get("imageUrl"):
+        delete_snapshot_file(target_evt["imageUrl"])
+    else:
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT image_url FROM potholes WHERE id = ?", (event_id,))
+            row = cursor.fetchone()
+            conn.close()
+            if row and row[0]:
+                delete_snapshot_file(row[0])
+        except Exception:
+            pass
+
     live_events = [evt for evt in live_events if evt["id"] != event_id]
     try:
         conn = sqlite3.connect(DB_PATH)
@@ -243,23 +282,32 @@ def delete_event(event_id: str):
     except Exception as e:
         print("Delete DB error:", e)
 
-    return {"status": "success", "message": f"Event {event_id} deleted"}
+    return {"status": "success", "message": f"Event {event_id} and its snapshot deleted"}
 
 @app.post("/api/events/clear-resolved")
 def clear_resolved_events():
-    """Clears all resolved events from memory and database."""
+    """Clears all resolved events from memory, database, and disk snapshots."""
     global live_events
-    live_events = [evt for evt in live_events if evt.get("status") != "resolved"]
+    resolved_evts = [evt for evt in live_events if evt.get("status") == "resolved"]
+    for evt in resolved_evts:
+        delete_snapshot_file(evt.get("imageUrl"))
+
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
+        cursor.execute("SELECT image_url FROM potholes WHERE status = 'resolved'")
+        rows = cursor.fetchall()
+        for r in rows:
+            if r[0]:
+                delete_snapshot_file(r[0])
         cursor.execute("DELETE FROM potholes WHERE status = 'resolved'")
         conn.commit()
         conn.close()
     except Exception as e:
         print("Clear resolved DB error:", e)
 
-    return {"status": "success", "message": "All resolved events cleared"}
+    live_events = [evt for evt in live_events if evt.get("status") != "resolved"]
+    return {"status": "success", "message": "All resolved events and snapshot images cleared"}
 
 @app.post("/api/detect")
 def detect_potholes(payload: DetectionRequest):
