@@ -828,13 +828,10 @@ body {
   }
 
   .dashcam-hud {
-    right: 16px;
-    bottom: 84px;
-    width: calc(100% - 32px);
-    max-width: 360px;
+    display: none !important; /* Hide floating dashcam overlay on mobile view to leave GIS map clean & fully visible */
   }
 
-  .frap-floating-btn {
+  .mobile-floating-btn {
     bottom: 16px;
     right: 16px;
     width: 50px;
