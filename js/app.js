@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filterSeverity').addEventListener('change', applyFilters);
 });
 
-// Theme Toggle System (Starbucks Light / Dark Mode)
+// Theme Toggle System (Light / Dark Mode)
 function initTheme() {
   const savedTheme = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);

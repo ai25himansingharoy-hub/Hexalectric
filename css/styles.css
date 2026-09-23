@@ -1,17 +1,17 @@
 /* ==========================================================================
-   HEXALECTRIC GIS Urban Intelligence - Starbucks Inspired Design System
+   HEXALECTRIC GIS Urban Intelligence - Design System
    ========================================================================== */
 
 /* 1. Theme Variables & Tokens */
 :root, [data-theme="light"] {
-  /* 4-Tier Starbucks Green Brand System */
-  --sb-green-starbucks: #006241;  /* Primary headings & section headers */
-  --sb-green-accent: #00754A;     /* Primary filled CTAs & floating Frap button */
+  /* 4-Tier Green Brand System */
+  --hex-green-primary: #006241;  /* Primary headings & section headers */
+  --sb-green-accent: #00754A;     /* Primary filled CTAs */
   --sb-green-house: #1E3932;      /* Deep feature bands & header background */
   --sb-green-uplift: #2b5148;     /* Secondary mid-dark green */
   --sb-green-light: #d4e9e2;      /* Pale mint wash & active field tints */
   
-  /* Gold Accent System (Reserved for Rewards / SIH Status Ceremony) */
+  /* Gold Accent System */
   --sb-gold: #cba258;
   --sb-gold-light: #dfc49d;
   --sb-gold-lightest: #faf6ee;
@@ -29,7 +29,7 @@
   --ceramic-bg: #edebe9;          /* Ceramic off-white section wash */
   --card-bg: #ffffff;             /* Crisp white content cards & modals */
   --card-bg-hover: #f9f8f6;
-  --header-bg: #1E3932;           /* House Green Flagship Header */
+  --header-bg: #1E3932;           /* Deep House Green Header */
   --header-text: #ffffff;
   --sidebar-bg: #ffffff;
   
@@ -57,17 +57,17 @@
   --sidebar-width: 380px;
 }
 
-/* Dark Mode Tokens (Espresso / Dark House Green Theme) */
+/* Dark Mode Tokens */
 [data-theme="dark"] {
-  --sb-green-starbucks: #10b981;  /* Luminous green headings */
+  --hex-green-primary: #10b981;  /* Luminous green headings */
   --sb-green-accent: #00754A;
   --sb-green-house: #0b1713;
   --sb-green-uplift: #1a332c;
   --sb-green-light: rgba(212, 233, 226, 0.15);
 
-  --canvas-bg: #0b1713;           /* Dark House Green Canvas */
+  --canvas-bg: #0b1713;           /* Dark Green Canvas */
   --ceramic-bg: #12241f;
-  --card-bg: #162b24;             /* Dark Green Ceramic Cards */
+  --card-bg: #162b24;             /* Dark Green Cards */
   --card-bg-hover: #1e3930;
   --header-bg: #070e0c;
   --header-text: #ffffff;
@@ -96,7 +96,7 @@ body {
   font-family: var(--font-main);
   background-color: var(--canvas-bg);
   color: var(--text-main);
-  letter-spacing: -0.01em; /* Universal tight tracking for SoDoSans feel */
+  letter-spacing: -0.01em;
   overflow: hidden;
   height: 100vh;
   width: 100vw;
@@ -111,7 +111,7 @@ body {
   position: relative;
 }
 
-/* 3. Starbucks Flagship App Header */
+/* 3. Flagship App Header */
 .app-header {
   height: var(--header-height);
   background: var(--header-bg);
@@ -287,7 +287,7 @@ body {
   overflow: hidden;
 }
 
-/* 5. Starbucks Card Sidebar Panel */
+/* 5. Card Sidebar Panel */
 .sidebar {
   width: var(--sidebar-width);
   background: var(--sidebar-bg);
@@ -311,14 +311,14 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: var(--sb-green-starbucks);
+  color: var(--hex-green-primary);
   margin-bottom: 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Starbucks 12px Card Radius + Whisper Soft Shadows */
+/* Card Grid & Shadows */
 .kpi-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -328,7 +328,7 @@ body {
 .kpi-card {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: var(--card-radius); /* 12px Starbucks card spec */
+  border-radius: var(--card-radius);
   padding: 14px;
   box-shadow: var(--card-shadow);
   transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
@@ -356,7 +356,7 @@ body {
 
 .kpi-card.potholes .value { color: var(--danger); }
 .kpi-card.vehicles .value { color: var(--warning); }
-.kpi-card.buses .value { color: var(--sb-green-starbucks); }
+.kpi-card.buses .value { color: var(--hex-green-primary); }
 
 /* Filter Controls */
 .filter-group {
@@ -453,7 +453,7 @@ body {
   padding: 2px 8px;
   border-radius: var(--pill-radius);
   background: var(--sb-green-light);
-  color: var(--sb-green-starbucks);
+  color: var(--hex-green-primary);
   font-weight: 700;
 }
 
@@ -577,7 +577,7 @@ body {
   border-radius: 4px;
 }
 
-/* 7. Signature Starbucks Floating Frap Button (56px Circular CTA) */
+/* 7. Floating Mobile AI Scanner Button */
 .frap-floating-btn {
   position: fixed;
   bottom: 24px;
@@ -677,7 +677,7 @@ body {
 .modal-header h2 {
   font-family: var(--font-heading);
   font-size: 1.4rem;
-  color: var(--sb-green-starbucks);
+  color: var(--hex-green-primary);
 }
 
 .close-btn {
@@ -720,7 +720,7 @@ body {
 }
 
 .report-table th {
-  color: var(--sb-green-starbucks);
+  color: var(--hex-green-primary);
   font-family: var(--font-main);
   font-weight: 700;
   text-transform: uppercase;
