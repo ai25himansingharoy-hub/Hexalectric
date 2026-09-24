@@ -29,13 +29,25 @@ function initMap() {
   markerGroup = L.layerGroup().addTo(map);
   heatmapGroup = L.layerGroup();
 
-  // Draw Bus Route Polyline (Route R-17)
+  // Draw Bus Route Polyline (Route R-17 with Luminous Dual-Layer Neon Highlight)
   const routeCoords = busRoute17.map(pt => [pt.lat, pt.lng]);
+  
+  // Outer Luminous Glow Line
+  L.polyline(routeCoords, {
+    color: '#0284c7',
+    weight: 10,
+    opacity: 0.5,
+    lineCap: 'round',
+    lineJoin: 'round'
+  }).addTo(map);
+
+  // Inner Electric Cyan High-Contrast Core Polyline
   routePolyline = L.polyline(routeCoords, {
-    color: '#00754A',
-    weight: 4,
-    opacity: 0.85,
-    dashArray: '8, 8'
+    color: '#38bdf8',
+    weight: 5,
+    opacity: 0.95,
+    lineCap: 'round',
+    lineJoin: 'round'
   }).addTo(map);
 
   // Initial Bus Position Marker

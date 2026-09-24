@@ -3,10 +3,13 @@
 // Route R-17 Waypoints (Kolkata Transit Corridor)
 const busRoute17 = [
   { lat: 22.5645, lng: 88.3516, name: "Esplanade Station" },
-  { lat: 22.5552, lng: 88.3519, name: "Park Street Crossing" },
+  { lat: 22.5580, lng: 88.3518, name: "Maidan Metro Corridor" },
+  { lat: 22.5512, lng: 88.3514, name: "Park Street Crossing" },
   { lat: 22.5447, lng: 88.3498, name: "Rabindra Sadan" },
   { lat: 22.5358, lng: 88.3475, name: "Exide Crossing" },
+  { lat: 22.5280, lng: 88.3473, name: "Hazra Road Junction" },
   { lat: 22.5222, lng: 88.3511, name: "Rashbehari Avenue" },
+  { lat: 22.5200, lng: 88.3580, name: "Triangular Park" },
   { lat: 22.5186, lng: 88.3654, name: "Gariahat Crossing" }
 ];
 
