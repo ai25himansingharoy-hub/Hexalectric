@@ -175,7 +175,7 @@ function switchMapView(mode) {
   }
 }
 
-// Open 360° Street View Modal using Embedded Google Street View Panorama
+// Open Interactive Street & Spatial Inspection View
 function openStreetView(lat, lng) {
   const modal = document.getElementById('streetViewModal');
   const container = document.getElementById('mly');
@@ -183,8 +183,7 @@ function openStreetView(lat, lng) {
   if (!modal || !container) return;
   modal.classList.add('active');
 
-  // Embed interactive Google Street View panorama iframe (No API Key Required!)
-  const googleStreetViewUrl = `https://maps.google.com/maps?q=${lat},${lng}&layer=c&cbll=${lat},${lng}&output=embed`;
+  const osmEmbedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.003}%2C${lat - 0.003}%2C${lng + 0.003}%2C${lat + 0.003}&layer=mapnik&marker=${lat}%2C${lng}`;
 
   container.innerHTML = `
     <iframe 
@@ -192,8 +191,7 @@ function openStreetView(lat, lng) {
       height="100%" 
       style="border:0; border-radius: 12px;" 
       loading="lazy" 
-      allowfullscreen
-      src="${googleStreetViewUrl}">
+      src="${osmEmbedUrl}">
     </iframe>
   `;
 }
