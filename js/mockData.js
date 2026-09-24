@@ -1,4 +1,4 @@
-// HEXALECTRIC Mock Data & Simulation Datasets
+// ROADINTEL by Hexalectric Mock Data & Simulation Datasets
 
 // Route R-17 Waypoints (Snapped to Kolkata Arterial Road Corridor: JL Nehru Rd -> SP Mukherjee Rd -> Rashbehari Ave)
 const busRoute17 = [

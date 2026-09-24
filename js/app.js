@@ -1,4 +1,4 @@
-// HEXALECTRIC Main Application Controller
+// ROADINTEL by Hexalectric Main Application Controller
 
 let liveBackendConnected = false;
 

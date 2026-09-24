@@ -1,4 +1,4 @@
-// HEXALECTRIC GIS Map Layer & Marker Controller (with 360° Street View & Spatial Heatmaps)
+// ROADINTEL by Hexalectric GIS Map Layer & Marker Controller
 
 let map;
 let markerGroup;

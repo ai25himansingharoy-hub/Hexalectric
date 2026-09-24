@@ -1,4 +1,4 @@
-// HEXALECTRIC Live Bus Movement & AI Pipeline Simulator
+// ROADINTEL by Hexalectric Live Bus Movement & AI Pipeline Simulator
 
 let isSimulating = false;
 let simulationInterval = null;

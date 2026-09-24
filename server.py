@@ -154,7 +154,7 @@ def fetch_pothole_records() -> List[Dict[str, Any]]:
         return []
 
 app = FastAPI(
-    title="HEXALECTRIC AI Pothole Detection Server",
+    title="ROADINTEL by Hexalectric AI Pothole Detection Server",
     description="Real-time Roboflow model backend for GIS Bus Camera Intelligence",
     version="1.0.0"
 )
@@ -195,7 +195,7 @@ def health_check():
     """Returns server health status."""
     return {
         "status": "online",
-        "system": "HEXALECTRIC AI Pothole Detection Engine",
+        "system": "ROADINTEL by Hexalectric AI Pothole Detection Engine",
         "active_events_count": len(live_events)
     }
 
@@ -502,7 +502,7 @@ if __name__ == "__main__":
             pass
 
         print("\n" + "=" * 65)
-        print("  HEXALECTRIC GIS AI Pothole Detection Server is LIVE!")
+        print("  ROADINTEL by Hexalectric GIS AI Server is LIVE!")
         print("=" * 65)
         print("  -> GIS Dashboard:        http://localhost:8000/")
         print("  -> Mobile Camera Node:   http://localhost:8000/mobile.html")
