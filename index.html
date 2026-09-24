@@ -44,12 +44,24 @@
           </h1>
           <div class="tagline">
             <span>Bus Camera Urban Intelligence</span>
-            <span class="badge-sih">SIH 2026</span>
           </div>
         </div>
       </div>
 
       <div class="header-actions">
+        <div class="status-pill">
+          <span class="status-dot"></span>
+          <span>SYSTEM ACTIVE</span>
+        </div>
+        <button id="btnSimulate" class="btn btn-primary">
+          Start Bus Simulation
+        </button>
+        <button id="btnClearDemo" class="btn btn-outline" onclick="clearDemoData()">
+          Clear Demo Data
+        </button>
+        <button id="btnReport" class="btn btn-outline">
+          Municipal Report
+        </button>
         <button id="themeToggleBtn" class="btn btn-theme-toggle" onclick="toggleTheme()">
           <span id="themeToggleIcon">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,19 +76,6 @@
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
           </span> <span id="themeToggleText">Light Mode</span>
-        </button>
-        <div class="status-pill">
-          <span class="status-dot"></span>
-          <span>SYSTEM ACTIVE</span>
-        </div>
-        <button id="btnSimulate" class="btn btn-primary">
-          Start Bus Simulation
-        </button>
-        <button id="btnClearDemo" class="btn btn-outline" onclick="clearDemoData()">
-          Clear Demo Data
-        </button>
-        <button id="btnReport" class="btn btn-outline">
-          Municipal Report
         </button>
       </div>
     </header>
@@ -161,30 +160,11 @@
           <button id="hudBtnRoute" class="hud-btn" onclick="switchMapView('route')">Route R-17</button>
         </div>
 
-        <!-- Live Dashcam Feed & AI Processing HUD Drawer -->
-        <div class="dashcam-hud">
-          <div class="dashcam-header">
-            <div class="dashcam-title">
-              <span class="rec-dot"></span>
-              <span>BUS_104 CAMERA FEED (YOLO v8)</span>
-            </div>
-            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);"
-              id="dashcamTime">12:30:45</span>
-          </div>
-          <div class="dashcam-feed">
-            <canvas id="dashcamCanvas" class="dashcam-canvas"></canvas>
-            <div class="dashcam-overlay-info">
-              <span>LAT: 22.5521° N</span>
-              <span>LNG: 88.3518° E</span>
-              <span>CONF: 94%</span>
-            </div>
-          </div>
-        </div>
+
       </main>
     </div>
   </div>
 
-  <!-- Municipal Authority Road Inspection Summary Report Modal -->
   <!-- Municipal Authority Road Inspection Summary Report Modal -->
   <div id="reportModal" class="modal-overlay" onclick="closeReportModal()">
     <div class="modal-card" onclick="event.stopPropagation()">

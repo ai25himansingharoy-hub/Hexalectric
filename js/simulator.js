@@ -109,7 +109,8 @@ function startDashcamFeedLoop() {
 
       // HUD Metadata text
       const timeStr = new Date().toLocaleTimeString();
-      document.getElementById('dashcamTime').innerText = timeStr;
+      const dashcamTimeEl = document.getElementById('dashcamTime');
+      if (dashcamTimeEl) dashcamTimeEl.innerText = timeStr;
     }
     requestAnimationFrame(renderFeed);
   }
