@@ -1,19 +1,23 @@
 // HEXALECTRIC Mock Data & Simulation Datasets
 
-// Route R-17 Waypoints (Kolkata Transit Corridor)
+// Route R-17 Waypoints (Snapped to Kolkata Arterial Road Corridor: JL Nehru Rd -> SP Mukherjee Rd -> Rashbehari Ave)
 const busRoute17 = [
-  { lat: 22.5645, lng: 88.3516, name: "Esplanade Station" },
-  { lat: 22.5580, lng: 88.3518, name: "Maidan Metro Corridor" },
-  { lat: 22.5512, lng: 88.3514, name: "Park Street Crossing" },
-  { lat: 22.5447, lng: 88.3498, name: "Rabindra Sadan" },
-  { lat: 22.5358, lng: 88.3475, name: "Exide Crossing" },
-  { lat: 22.5280, lng: 88.3473, name: "Hazra Road Junction" },
-  { lat: 22.5222, lng: 88.3511, name: "Rashbehari Avenue" },
-  { lat: 22.5200, lng: 88.3580, name: "Triangular Park" },
-  { lat: 22.5186, lng: 88.3654, name: "Gariahat Crossing" }
+  { lat: 22.5644, lng: 88.3518, name: "Esplanade Bus Station" },
+  { lat: 22.5585, lng: 88.3516, name: "JL Nehru Rd (Maidan Metro)" },
+  { lat: 22.5532, lng: 88.3512, name: "Park Street Crossing" },
+  { lat: 22.5475, lng: 88.3503, name: "Shakespeare Sarani Intersection" },
+  { lat: 22.5408, lng: 88.3486, name: "Rabindra Sadan Metro" },
+  { lat: 22.5365, lng: 88.3473, name: "Exide Crossing (AJC Bose Rd)" },
+  { lat: 22.5302, lng: 88.3470, name: "Ashutosh Mukherjee Rd (Netaji Bhavan)" },
+  { lat: 22.5255, lng: 88.3470, name: "Hazra Crossing (SP Mukherjee Rd)" },
+  { lat: 22.5204, lng: 88.3470, name: "Rashbehari & SP Mukherjee Corner" },
+  { lat: 22.5198, lng: 88.3512, name: "Rashbehari Avenue Corridor" },
+  { lat: 22.5192, lng: 88.3556, name: "Deshapriya Park" },
+  { lat: 22.5188, lng: 88.3602, name: "Triangular Park" },
+  { lat: 22.5185, lng: 88.3665, name: "Gariahat Junction Flyover" }
 ];
 
-// Pre-populated Road Damage Detections
+// Pre-populated Road Damage Detections (Snapped on Street Tarmac)
 const initialEvents = [
   {
     id: "EVT-8091",
@@ -22,9 +26,9 @@ const initialEvents = [
     confidence: 0.94,
     busId: "BUS_104",
     routeId: "R_17",
-    lat: 22.5521,
-    lng: 88.3518,
-    locationName: "Park Street Near Flurys",
+    lat: 22.5532,
+    lng: 88.3512,
+    locationName: "Park Street & JL Nehru Intersection",
     timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     bbox: [120, 80, 180, 100], // [x, y, w, h]
     status: "pending"
@@ -36,8 +40,8 @@ const initialEvents = [
     confidence: 0.88,
     busId: "BUS_104",
     routeId: "R_17",
-    lat: 22.5412,
-    lng: 88.3492,
+    lat: 22.5408,
+    lng: 88.3486,
     locationName: "Rabindra Sadan Flyover Base",
     timestamp: new Date(Date.now() - 1000 * 60 * 28).toISOString(),
     bbox: [140, 90, 120, 80],
@@ -50,8 +54,8 @@ const initialEvents = [
     confidence: 0.91,
     busId: "BUS_202",
     routeId: "R_22",
-    lat: 22.5321,
-    lng: 88.3470,
+    lat: 22.5365,
+    lng: 88.3473,
     locationName: "Exide Traffic Intersection",
     timestamp: new Date(Date.now() - 1000 * 60 * 40).toISOString(),
     bbox: [50, 60, 200, 130],
@@ -64,9 +68,9 @@ const initialEvents = [
     confidence: 0.96,
     busId: "BUS_305",
     routeId: "R_08",
-    lat: 22.5204,
-    lng: 88.3530,
-    locationName: "Rashbehari Triangular Park",
+    lat: 22.5188,
+    lng: 88.3602,
+    locationName: "Rashbehari Triangular Park Signal",
     timestamp: new Date(Date.now() - 1000 * 60 * 55).toISOString(),
     bbox: [110, 100, 160, 90],
     status: "pending"
@@ -78,9 +82,9 @@ const initialEvents = [
     confidence: 0.85,
     busId: "BUS_104",
     routeId: "R_17",
-    lat: 22.5188,
-    lng: 88.3630,
-    locationName: "Gariahat Market Signal",
+    lat: 22.5185,
+    lng: 88.3665,
+    locationName: "Gariahat Market Crossing",
     timestamp: new Date(Date.now() - 1000 * 60 * 70).toISOString(),
     bbox: [220, 50, 70, 140],
     status: "pending"
